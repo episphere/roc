@@ -12,9 +12,17 @@ console.log('online tool available at https://episphere.github.io/roc');
         roc.div=div
         console.log('assembling UI at ',div)
         // populate div
-        let h = ':-)'
-        h +=''
+        let h = '<h3>Data</h3>'
+        h +='<p>Provide data in two columns, [observed (0/1),predicted (numeric)] (<a href="?D1.csv">demo</a>). Predicted is a number typically between 0 and 1 indicating the cumulative probablity of a positive prediction, but can also be any number that evolves monotonically with a positive prediction. It can be, for example, the activation value of the output of a neural network.</p>'
+        h +='<textarea id="rocData" style="height:500px;width:100px"></textarea>'
         div.innerHTML=h
+
+        if(location.search.length>3){
+            let url=location.search.slice(1)
+            fetch(url).then(f=>f.text().then(txt=>{
+                debugger
+            }))
+        }
 
         return div
     }
