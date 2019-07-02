@@ -6,10 +6,11 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="roc.css" rel="stylesheet">
 </head>
-<body>
+<body onload="roc.ui('rocDiv')">
     <div class="container">
-    <h2>Response Operatic Characteristic Curve (ROC)</h2>
-    <p>Landing page for <a href="#" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
+        <h2>Response Operatic Characteristic Curve (ROC)</h2>
+        <p>Landing page for <a href="#" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
+        <div id="rocDiv"><span style="color:red">loading ... <br>if this takes too long please create an issue.</span></div>
     </div>
 </body>
 </html>    
