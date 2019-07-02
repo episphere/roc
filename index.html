@@ -5,7 +5,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link href="roc.css" rel="stylesheet">
 </head>
 <body onload="setTimeout(_=>roc.ui('rocDiv'),300)"> <!-- the timeout is completely not needed, it is used here to match the expectation that a tool is being loaded -->
@@ -13,6 +12,8 @@
         <h2>Response Operatic Characteristic Curve (ROC) <i class="fa fa-power-off" style="color:green;font-size:x-large;cursor:pointer" onclick="this.style.color='red';location.reload()"></i></h2>
         <p>Landing page for <a href="https://github.com/episphere/roc/blob/master/roc.js" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
         <div id="rocDiv"><span style="color:red">Loading ... <br>if this takes too long please <a href="https://github.com/episphere/roc/issues" target="_blank">create an issue</a>.</span></div>
+        <h3>Computation</h3>
+        <p> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures can migrate to where the data is. </p>
     </div>
 </body>
 </html>    
