@@ -2,7 +2,7 @@ console.log('roc.js loaded');
 console.log('online tool available at https://episphere.github.io/roc');
 
 
-(function(){
+(function(){ // anonymous function to keep scope untouched unless called (not required) from browser 
     const roc={}
 
     roc.ui=function(div){
@@ -11,6 +11,11 @@ console.log('online tool available at https://episphere.github.io/roc');
         if(typeof(div)=='string'){div=document.getElementById(div)}
         roc.div=div
         console.log('assembling UI at ',div)
+        // populate div
+        let h = ':-)'
+        h +=''
+        div.innerHTML=h
+
         return div
     }
 

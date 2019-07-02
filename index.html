@@ -4,13 +4,15 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">-->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link href="roc.css" rel="stylesheet">
 </head>
-<body onload="roc.ui('rocDiv')">
+<body onload="setTimeout(_=>roc.ui('rocDiv'),300)"> <!-- the timeout is completely not needed, it is used here to match the expectation that a tool is being loaded -->
     <div class="container">
-        <h2>Response Operatic Characteristic Curve (ROC)</h2>
-        <p>Landing page for <a href="#" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
-        <div id="rocDiv"><span style="color:red">loading ... <br>if this takes too long please create an issue.</span></div>
+        <h2>Response Operatic Characteristic Curve (ROC) <i class="fa fa-power-off" style="color:green;font-size:x-large;cursor:pointer" onclick="this.style.color='red';location.reload()"></i></h2>
+        <p>Landing page for <a href="https://github.com/episphere/roc/blob/master/roc.js" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
+        <div id="rocDiv"><span style="color:red">Loading ... <br>if this takes too long please <a href="https://github.com/episphere/roc/issues" target="_blank">create an issue</a>.</span></div>
     </div>
 </body>
 </html>    
