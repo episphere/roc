@@ -19,6 +19,7 @@ console.log('online tool available at https://episphere.github.io/roc');
         h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
         h +='</td><td id="rocTd" style="vertical-align:top">(ROC will be ploted here)</td></tr></table>'
         h +='<input type="file" style="color:blue"> <span style="color:orange">(under development)</span>'
+        h +='<div class="boxPicker" style="height:600px"></div>'
         div.innerHTML=h
 
         if(location.search.length>3){
@@ -28,6 +29,13 @@ console.log('online tool available at https://episphere.github.io/roc');
                 //debugger
             }))
         }
+
+        // Box
+        /*
+        (new Box.FilePicker()).show(false, '123', {
+            container: '#boxPicker'
+        });
+        */
 
         return div
     }
