@@ -18,7 +18,7 @@ console.log('online tool available at https://episphere.github.io/roc');
         h +='<table><tr><td>'
         h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
         h +='</td><td id="rocTd" style="vertical-align:top">(ROC will be ploted here)</td></tr></table>'
-        h +='<input type="file" style="color:blue"> <span style="color:orange">(under development)</span>'
+        h +='<input id="fileInput" type="file" style="color:blue"> <span style="color:orange">(under development)</span>'
         h +='<div class="boxPicker" style="height:600px"></div>'
         div.innerHTML=h
 
@@ -29,6 +29,18 @@ console.log('online tool available at https://episphere.github.io/roc');
                 //debugger
             }))
         }
+
+        
+        let ip = document.getElementById('fileInput')
+        ip.onchange=ev=>{
+            var reader = new FileReader();
+            reader.onload = function(){
+              rocData.value = reader.result.trim();
+            };
+            reader.readAsText(ip.files[0]);
+        }
+            
+        
 
         // Box
         /*
