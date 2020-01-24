@@ -6,5 +6,5 @@ Serving dev branches
 * jonas at https://raw.githack.com/episphere/roc/tree/jonas
 #### Adding ROC to your application
 ```
-<script src="https://episphere.github.io/roc/roc.js></script>"
+<script src="https://episphere.github.io/roc/roc.js"></script>
 ```
