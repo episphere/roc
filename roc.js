@@ -60,6 +60,13 @@ roc.runText=(txt=rocData.value)=>{ // default points ti UP element
         roc.data.obs[i]=parseFloat(row[0])
         roc.data.pred[i]=parseFloat(row[1])
     })
+    roc.data.th=roc.data.pred.sort() // all the thresholds to try
+    const count=x=>x.reduce((a,b)=>a+b)
+    roc.truePos=[]
+    roc.falsePos=[]
+    roc.trueNeg=[]
+    roc.falseNeg=[]
+    //let thPreds=roc.th.map((t,i)=>roc.data.pred[i]>t)
     //debugger
 }
 
