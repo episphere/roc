@@ -1,8 +1,7 @@
 <html>
 <head>
-    <script src="roc.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="plotly.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+    <script src="chart.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap.native@2.0.27/dist/bootstrap-native-v4.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -11,11 +10,11 @@
     <!-- https://developer.box.com/docs/box-content-picker -->
     <!-- <script src="https://cdn01.boxcdn.net/platform/elements/10.1.0/en-US/picker.js"></script>-->
 </head>
-<body onload="setTimeout(_=>roc.ui('rocDiv'),300)"> <!-- the timeout is completely not needed, it is used here to match the expectation that a tool is being loaded -->
+<body>
     <div class="container">
         <h2>Response Operatic Characteristic Curve (ROC) <i class="fa fa-power-off" style="color:green;font-size:x-large;cursor:pointer" onclick="this.style.color='red';location.reload()"></i></h2>
         <p>Landing page for <a href="https://github.com/episphere/roc/blob/master/roc.js" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
-        <div id="rocDiv"><span style="color:red">Loading ... <br>if this takes too long please <a href="https://github.com/episphere/roc/issues" target="_blank">create an issue</a>.</span></div>
+        <canvas id="rocDiv"><span style="color:red">Loading ... <br>if this takes too long please <a href="https://github.com/episphere/roc/issues" target="_blank">create an issue</a>.</span></canvas>
         <h3>Computation</h3>
         <p> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures can migrate to where the data is. </p>
     </div>
