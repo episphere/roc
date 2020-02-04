@@ -72,6 +72,4 @@ roc.runText=(txt=rocData.value)=>{ // default points ti UP element
 
 if(typeof(define)!="undefined"){
     define(roc)
-}else if(typeof(window)!="undefined"){
-    window.roc=roc
 }
