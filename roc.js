@@ -99,7 +99,7 @@ roc.plotDiv=(div)=>{
         let layout = {
           title: 'Receiver Operating Characteristic (ROC) curve',
           xaxis: {
-            title: 'false positive rate',
+            title: 'true positive rate',
             range:[0,1],
             linecolor: 'black',
             mirror: true
