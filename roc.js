@@ -15,10 +15,10 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
-    h +='<input id="fileInput" type="file" style="color:blue"> <input type="range">'
+
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
-
+    let sliderThing = document.getElementById("fileInput");
     if(location.search.length>3){
         let url=location.search.slice(1)
         fetch(url).then(f=>f.text().then(txt=>{
@@ -114,6 +114,15 @@ roc.plotDiv=(div)=>{
         };
         Plotly.newPlot(div, [xyROC],layout);
     }
+
+    var slider = document.getElementById("fileInput");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+        console.log("here we are"+ this.value);
+}
 }
 
 if(typeof(define)!="undefined"){
