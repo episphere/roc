@@ -14,8 +14,8 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<p>Provide data in two columns, [observed (0/1),predicted (numeric)] (<a href="?D1.csv">demo1</a>, <a href="?D2.csv">demo2</a>, borrowed from R\'s <a href="http://www.biosoft.hacettepe.edu.tr/easyROC/" target="_blank">easyROC</a> . Predicted is a number, typically between 0 and 1 indicating the cumulative probablity of a positive prediction, but can just as well be any number that evolves monotonically with the positive prediction. It can be, for example, the activation value of the output of a neural network.</p>'
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
-    h +='</td><td id="rocTd" style="vertical-align:top">(ROC will be ploted here)</td></tr></table>'
-    h +='<input id="fileInput" type="file" style="color:blue"> <span style="color:orange">(under development)</span>'
+    h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
+    h +='<input id="fileInput" type="file" style="color:blue"> <input type="range">'
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
 
@@ -23,7 +23,7 @@ roc.ui=function(div){ // called onload by the reference web application
         let url=location.search.slice(1)
         fetch(url).then(f=>f.text().then(txt=>{
             rocData.value=txt
-            roc.runText()
+            roc.parseText()
         }))
     }
 
@@ -33,7 +33,7 @@ roc.ui=function(div){ // called onload by the reference web application
         var reader = new FileReader();
         reader.onload = function(){
           rocData.value = reader.result.trim();
-          roc.runText()
+          roc.parseText()
         };
         reader.readAsText(ip.files[0]);
     }
@@ -50,7 +50,7 @@ roc.ui=function(div){ // called onload by the reference web application
     return div
 }
 
-roc.runText=(txt=rocData.value)=>{ // default points ti UP element
+roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP element
     roc.data={
         obs:[],
         pred:[]
@@ -62,16 +62,58 @@ roc.runText=(txt=rocData.value)=>{ // default points ti UP element
     })
     roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
     const count=x=>x.reduce((a,b)=>a+b)
-    roc.data.truePos=roc.data.th.map(t=>{
-        let pos=roc.data.pred.map(p=>p>t)
+    roc.data.truePosCount=[]
+    roc.data.falsePosCount=[]
+    roc.data.th.forEach((t,i)=>{
+        let pos=roc.data.pred.map(p=>p>=t)
         let truePos=pos.map((ps,i)=>(ps&roc.data.obs[i]))
-        return count(truePos)
+        let falsePos=pos.map((ps,i)=>(ps&(!roc.data.obs[i])))
+        roc.data.truePosCount[i]=count(truePos)
+        roc.data.falsePosCount[i]=count(falsePos)
     })
-    roc.data.falsePos=[]
-    roc.data.trueNeg=[]
-    roc.data.falseNeg=[]
-    //let thPreds=roc.th.map((t,i)=>roc.data.pred[i]>t)
-    //debugger
+    if(typeof(plotDiv)!="undefined"){
+        roc.plotDiv(plotDiv)
+    }   
+}
+
+roc.plotDiv=(div)=>{
+    if(typeof(div)=='string'){
+        div=document.getElementById(div)
+    }
+    roc.div=div
+    div.innerHTML='' // clear
+    div.style.width=div.style.height=500
+    if(typeof(Plotly)=='undefined'){ // if Plotly not loaded already, do it now
+        s=document.createElement('script')
+        s.src="https://cdn.plot.ly/plotly-latest.min.js"
+        s.onload=_=>{roc.plotDiv(div)}
+        document.head.appendChild(s)
+    }else{
+        // ploting line chart with Plotly
+        // https://plot.ly/javascript/line-charts/
+        n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
+        let xyROC = {
+            x: roc.data.falsePosCount.map(d=>d/n),
+            y: roc.data.truePosCount.map(d=>d/n)
+        };
+        let layout = {
+          title: 'Receiver Operating Characteristic (ROC) curve',
+          xaxis: {
+            title: 'false positive rate',
+            range:[0,1],
+            linecolor: 'black',
+            mirror: true
+          },
+          yaxis: {
+            title: 'false negative rate',
+            range:[0,1],
+            linecolor: 'black',
+            mirror: true
+          },
+          plot_bgcolor: 'silver'
+        };
+        Plotly.newPlot(div, [xyROC],layout);
+    }
 }
 
 if(typeof(define)!="undefined"){
