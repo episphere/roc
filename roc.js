@@ -15,7 +15,7 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
-    h +='<input id="fileInput" type="file" style="color:blue"> <input type="range">'
+    h +='<input id="fileInput" type="file" style="color:blue"> <input type="range"> <span style="color:silver">(under development)</span>'
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
 
@@ -71,6 +71,9 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.data.truePosCount[i]=count(truePos)
         roc.data.falsePosCount[i]=count(falsePos)
     })
+    n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
+    roc.data.falsePosRate=[0].concat(roc.data.falsePosCount.map(d=>d/n))
+    roc.data.truePosRate=[1].concat(roc.data.truePosCount.map(d=>d/n))
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
@@ -91,26 +94,31 @@ roc.plotDiv=(div)=>{
     }else{
         // ploting line chart with Plotly
         // https://plot.ly/javascript/line-charts/
-        n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
         let xyROC = {
-            x: roc.data.falsePosCount.map(d=>d/n),
-            y: roc.data.truePosCount.map(d=>d/n)
+            x: roc.data.falsePosRate,
+            y: roc.data.truePosRate,
+            fill: 'tonexty',
+            fillcolor:'#F2F4F4'
         };
         let layout = {
-          title: 'Receiver Operating Characteristic (ROC) curve',
+          title: `Receiver Operating Characteristic, AUC: ${'[Noor :-)]'}`,
           xaxis: {
             title: 'false positive rate',
             range:[0,1],
             linecolor: 'black',
-            mirror: true
+            mirror: true,
+            fixedrange: true,
+            showspikes: true
           },
           yaxis: {
             title: 'true positive rate',
             range:[0,1],
             linecolor: 'black',
-            mirror: true
+            mirror: true,
+            fixedrange: true,
+            showspikes: true
           },
-          plot_bgcolor: 'silver'
+          plot_bgcolor: '#85C1E9 '
         };
         Plotly.newPlot(div, [xyROC],layout);
     }
