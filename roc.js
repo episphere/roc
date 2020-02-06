@@ -74,6 +74,12 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
     roc.data.falsePosRate=[0].concat(roc.data.falsePosCount.map(d=>d/n))
     roc.data.truePosRate=[1].concat(roc.data.truePosCount.map(d=>d/n))
+    // calculate AUC
+    const dx = roc.data.falsePosRate.slice(1).map((v,i)=>Math.abs(v-roc.data.falsePosRate[i]))
+    const dy = roc.data.truePosRate.slice(1).map((v,i)=>Math.abs(v-roc.data.truePosRate[i]))
+    dxdy=dx.map((v,i)=>{
+        return (v*dy[i])
+    })
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
