@@ -1,5 +1,5 @@
 # roc
-Response Operating Characteristic Curve, live at https://episphere.github.io/roc !
+Receiver Operating Characteristic Curve, live at https://episphere.github.io/roc !
 
 #### Adding ROC to your application
 ```
