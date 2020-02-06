@@ -101,7 +101,7 @@ roc.plotDiv=(div)=>{
             fillcolor:'#F2F4F4'
         };
         let layout = {
-          title: `Receiver Operating Characteristic, AUC: ${'[Noor :-)]'}`,
+          title: `Receiver Operating Characteristic, AUC: ${'[Noor :-|]'}`,
           xaxis: {
             title: 'false positive rate',
             range:[0,1],
