@@ -15,7 +15,8 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
-
+    h +='<div><input id="fileInput" type="file" style="color:blue"> <input type="range" min="0" max="100" value="50" id="rangeThing"><p>Value:<span id="demo"></span></p></div>'
+    h +='<button id="AUCbutton">Calculate AUC</button>'
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
     let sliderThing = document.getElementById("fileInput");
@@ -113,17 +114,33 @@ roc.plotDiv=(div)=>{
           plot_bgcolor: 'silver'
         };
         Plotly.newPlot(div, [xyROC],layout);
+        Math.integral=function(a,b,c,xa,xb,h) {
+            var xp,y,s,result=0,g=(xb-xa)/h;
+            for(var i=0;i<h;i++)
+            {
+            xp = xa + g;
+            y = (a * Math.pow(xp, 2)) + (b * xp) + c;
+            s = g * y;
+            result += s;
+            }
+        
+            return result;
+            }
+        
+            /*Using the sample*/
+            document.getElementById("AUCbutton").onclick(alert( Math.integral([xyROC]) ));
     }
 
-    var slider = document.getElementById("fileInput");
+    var slider = document.getElementById("rangeThing");
     var output = document.getElementById("demo");
     output.innerHTML = slider.value;
 
     slider.oninput = function() {
         output.innerHTML = this.value;
-        console.log("here we are"+ this.value);
 }
 }
+
+
 
 if(typeof(define)!="undefined"){
     define(roc)
