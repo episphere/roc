@@ -15,7 +15,7 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
-    h +='<div><input id="fileInput" type="file" style="color:blue"> <input type="range" min="0" max="100" value="50" id="rangeThing"><p>Value:<span id="demo"></span></p></div>'
+    h +='<div><input id="fileInput" type="file" style="color:blue"> <input type="range"value="50" id="rangeThing"><p>Value:<span id="demo"></span></p></div>'
     h +='<button id="AUCbutton">Calculate AUC</button>'
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
@@ -75,7 +75,12 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
+    document.getElementById("rangeThing").setAttribute("min",Math.min(roc.data.th)),
+    document.getElementById("rangeThing").setAttribute("max",Math.max(roc.data.th))
+    
 }
+
+
 
 roc.plotDiv=(div)=>{
     if(typeof(div)=='string'){
@@ -128,7 +133,7 @@ roc.plotDiv=(div)=>{
             }
         
             /*Using the sample*/
-            document.getElementById("AUCbutton").onclick(alert( Math.integral([xyROC]) ));
+            // document.getElementById("AUCbutton").onclick(alert( Math.integral([xyROC]) ));
     }
 
     var slider = document.getElementById("rangeThing");
