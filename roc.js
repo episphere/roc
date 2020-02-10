@@ -72,14 +72,15 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.data.falsePosCount[i]=count(falsePos)
     })
     n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
-    roc.data.falsePosRate=[0].concat(roc.data.falsePosCount.map(d=>d/n))
+    roc.data.falsePosRate=[1].concat(roc.data.falsePosCount.map(d=>d/n))
     roc.data.truePosRate=[1].concat(roc.data.truePosCount.map(d=>d/n))
     // calculate AUC
-    const dx = roc.data.falsePosRate.slice(1).map((v,i)=>Math.abs(v-roc.data.falsePosRate[i]))
-    const dy = roc.data.truePosRate.slice(1).map((v,i)=>Math.abs(v-roc.data.truePosRate[i]))
-    dxdy=dx.map((v,i)=>{
-        return (v*dy[i])
-    })
+    let dxdy=[]
+    for(var j=1; j<roc.data.truePosRate.length ; j++){
+        dxdy[j-1]=roc.data.truePosRate[j]*(roc.data.falsePosRate[j-1]-roc.data.falsePosRate[j])
+    }
+    roc.data.auc=dxdy.reduce((a,b)=>a+b)
+    roc.data.auc=Math.round(roc.data.auc*10000)/10000 // rounding to 4 digits
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
@@ -104,10 +105,10 @@ roc.plotDiv=(div)=>{
             x: roc.data.falsePosRate,
             y: roc.data.truePosRate,
             fill: 'tonexty',
-            fillcolor:'#F2F4F4'
+            fillcolor:'#85C1E9'
         };
         let layout = {
-          title: `Receiver Operating Characteristic, AUC: ${'[Noor :-|]'}`,
+          title: `Receiver Operating Characteristic, AUC: ${roc.data.auc}`,
           xaxis: {
             title: 'false positive rate',
             range:[0,1],
@@ -124,7 +125,7 @@ roc.plotDiv=(div)=>{
             fixedrange: true,
             showspikes: true
           },
-          plot_bgcolor: '#85C1E9 '
+          plot_bgcolor: '#F2F4F4'
         };
         Plotly.newPlot(div, [xyROC],layout);
     }
