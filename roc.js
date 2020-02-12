@@ -39,7 +39,6 @@ roc.ui=function(div){ // called onload by the reference web application
     }
 
 
-
     // Box
     /*
     (new Box.FilePicker()).show(false, '123', {
@@ -49,6 +48,8 @@ roc.ui=function(div){ // called onload by the reference web application
 
     return div
 }
+
+
 
 roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP element
     roc.data={
@@ -134,3 +135,13 @@ roc.plotDiv=(div)=>{
 if(typeof(define)!="undefined"){
     define(roc)
 }
+
+function updateSlider(){
+    let threshMin = Math.min(...roc.data.th)
+    let threshMax = Math.max(...roc.data.th)
+    let min = document.getElementById("slider").setAttribute("min",this.threshMin)
+    let max = document.getElementById("slider").setAttribute("max",this.threshMax)
+    
+}
+
+
