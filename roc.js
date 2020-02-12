@@ -61,7 +61,7 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.data.obs[i]=parseFloat(row[0])
         roc.data.pred[i]=parseFloat(row[1])
     })
-    roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
+    let threshhold = roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
     const count=x=>x.reduce((a,b)=>a+b)
     roc.data.truePosCount=[]
     roc.data.falsePosCount=[]
@@ -85,6 +85,9 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
+
+    document.getElementById("tp").innerHTML= roc.data.truePosCount.length;
+    document.getElementById("fp").innerHTML= roc.data.falsePosCount.length;
 }
 
 roc.plotDiv=(div)=>{
@@ -105,6 +108,7 @@ roc.plotDiv=(div)=>{
         let xyROC = {
             x: roc.data.falsePosRate,
             y: roc.data.truePosRate,
+            z: roc.data.th,
             fill: 'tonexty',
             fillcolor:'#85C1E9'
         };
@@ -137,11 +141,23 @@ if(typeof(define)!="undefined"){
 }
 
 function updateSlider(){
-    let threshMin = Math.min(...roc.data.th)
-    let threshMax = Math.max(...roc.data.th)
-    let min = document.getElementById("slider").setAttribute("min",this.threshMin)
-    let max = document.getElementById("slider").setAttribute("max",this.threshMax)
+     document.getElementById("slider").setAttribute("min", Math.min(...roc.data.th))
+     document.getElementById("slider").setAttribute("max", Math.max(...roc.data.th))
+     document.getElementById("slider").setAttribute("value", median(roc.data.th))
     
+}
+
+function median(numbers) {
+    var median = 0, numsLen = numbers.length;
+    numbers.sort();
+    if (
+        numsLen % 2 === 0 
+    ) {
+        median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
+    } else { 
+      median = numbers[(numsLen - 1) / 2];
+    }
+    return median;
 }
 
 

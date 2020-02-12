@@ -9,3 +9,12 @@ h2 {
 h3 {
     color:gray
 }
+
+.column {
+    width: 32%;
+    height: 100;
+}
+
+.box {
+    align: center;
+}
