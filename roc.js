@@ -153,6 +153,7 @@ function updateSlider(){
      document.getElementById("slider").setAttribute("min", Math.min(...roc.data.th))
      document.getElementById("slider").setAttribute("max", Math.max(...roc.data.th))
      document.getElementById("slider").setAttribute("value", median(roc.data.th))
+     trace1.y = document.getElementById("slider").value
     
 }
 
@@ -170,3 +171,11 @@ function median(numbers) {
 }
 
 
+const trace1 = {
+
+}
+
+
+
+const data = [trace1]
+Plotly.newPlot('rocTd', data)
