@@ -64,13 +64,20 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     let threshhold = roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
     const count=x=>x.reduce((a,b)=>a+b)
     roc.data.truePosCount=[]
+    roc.data.trueNegCount=[]
     roc.data.falsePosCount=[]
+    roc.data.falseNegCount=[]
     roc.data.th.forEach((t,i)=>{
         let pos=roc.data.pred.map(p=>p>=t)
+        let neg=roc.data.pred.map(p=>p<=t)
         let truePos=pos.map((ps,i)=>(ps&roc.data.obs[i]))
         let falsePos=pos.map((ps,i)=>(ps&(!roc.data.obs[i])))
+        let falseNeg=neg.map((ns,i)=>(ns&(!roc.data.obs[i])))
+        let trueNeg=neg.map((ns,i)=>(ns&(roc.data.obs[i])))
         roc.data.truePosCount[i]=count(truePos)
         roc.data.falsePosCount[i]=count(falsePos)
+        roc.data.falseNegCount[i]=count(falseNeg)
+        roc.data.trueNegCount[i]=count(trueNeg)
     })
     n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
     roc.data.falsePosRate=[1].concat(roc.data.falsePosCount.map(d=>d/n))
@@ -88,6 +95,8 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
 
     document.getElementById("tp").innerHTML= roc.data.truePosCount.length;
     document.getElementById("fp").innerHTML= roc.data.falsePosCount.length;
+    document.getElementById("tn").innerHTML=roc.data.trueNegCount.length;
+    document.getElementById("fn").innerHTML=roc.data.falseNegCount.length;
 }
 
 roc.plotDiv=(div)=>{
