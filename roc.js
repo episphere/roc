@@ -39,7 +39,6 @@ roc.ui=function(div){ // called onload by the reference web application
     }
 
 
-
     // Box
     /*
     (new Box.FilePicker()).show(false, '123', {
@@ -49,6 +48,8 @@ roc.ui=function(div){ // called onload by the reference web application
 
     return div
 }
+
+
 
 roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP element
     roc.data={
@@ -60,16 +61,25 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.data.obs[i]=parseFloat(row[0])
         roc.data.pred[i]=parseFloat(row[1])
     })
-    roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
-    const count=x=>x.reduce((a,b)=>a+b)
+    let threshhold = roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
+
     roc.data.truePosCount=[]
+    roc.data.trueNegCount=[]
     roc.data.falsePosCount=[]
+    roc.data.falseNegCount=[]
     roc.data.th.forEach((t,i)=>{
-        let pos=roc.data.pred.map(p=>p>=t)
+//             const count=x=>x.reduce((a,b)=>a+b)
+        let pos=[]
+        let neg=[]
+        let idk= roc.data.pred.map(p=>p>=t ? pos.push(p) : neg.push(p))
         let truePos=pos.map((ps,i)=>(ps&roc.data.obs[i]))
         let falsePos=pos.map((ps,i)=>(ps&(!roc.data.obs[i])))
-        roc.data.truePosCount[i]=count(truePos)
-        roc.data.falsePosCount[i]=count(falsePos)
+        let falseNeg=neg.map((ns,i)=>(ns&(!roc.data.obs[i])))
+        let trueNeg=neg.map((ns,i)=>(ns&(roc.data.obs[i])))
+        roc.data.truePosCount[i]=truePos.length
+        roc.data.falsePosCount[i]=falsePos.length
+        roc.data.falseNegCount[i]=falseNeg.length
+        roc.data.trueNegCount[i]=trueNeg.length
     })
     n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
     roc.data.falsePosRate=[1].concat(roc.data.falsePosCount.map(d=>d/n))
@@ -84,6 +94,11 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
+
+    document.getElementById("tp").innerHTML= roc.data.truePosCount.length;
+    document.getElementById("fp").innerHTML= roc.data.falsePosCount.length;
+    document.getElementById("tn").innerHTML=roc.data.trueNegCount.length;
+    document.getElementById("fn").innerHTML=roc.data.falseNegCount.length;
 }
 
 roc.plotDiv=(div)=>{
@@ -104,6 +119,7 @@ roc.plotDiv=(div)=>{
         let xyROC = {
             x: roc.data.falsePosRate,
             y: roc.data.truePosRate,
+            z: roc.data.th,
             fill: 'tonexty',
             fillcolor:'#85C1E9'
         };
@@ -134,3 +150,34 @@ roc.plotDiv=(div)=>{
 if(typeof(define)!="undefined"){
     define(roc)
 }
+
+function updateSlider(){
+     document.getElementById("slider").setAttribute("min", Math.min(...roc.data.th))
+     document.getElementById("slider").setAttribute("max", Math.max(...roc.data.th))
+     document.getElementById("slider").setAttribute("value", median(roc.data.th))
+     trace1.y = document.getElementById("slider").value
+    
+}
+
+function median(numbers) {
+    var median = 0, numsLen = numbers.length;
+    numbers.sort();
+    if (
+        numsLen % 2 === 0 
+    ) {
+        median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
+    } else { 
+      median = numbers[(numsLen - 1) / 2];
+    }
+    return median;
+}
+
+
+const trace1 = {
+
+}
+
+
+
+const data = [trace1]
+Plotly.newPlot('rocTd', data)

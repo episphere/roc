@@ -14,8 +14,40 @@
         <h2>Receiver Operating characteristic (ROC) <i class="fa fa-power-off" style="color:green;font-size:x-large;cursor:pointer" onclick="this.style.color='red';location.reload()"></i></h2>
         <p>Landing page for <a href="https://github.com/episphere/roc/blob/master/roc.js" target="_blank">roc.js</a> support library. This library can be required client or server side, with or without graphics, i.e. direct calculation of AUC supported.</p>
         <div id="rocDiv"><span style="color:red">Loading ... <br>if this takes too long please <a href="https://github.com/episphere/roc/issues" target="_blank">create an issue</a>.</span></div>
+        <input type="range" id="slider" onchange="updateSlider()">
+        <p>Value:<span id="demo"></span></p>
         <h3>Computation</h3>
         <p> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures can migrate to where the data is. </p>
+        <script>
+            let output = document.getElementById("demo")
+            document.getElementById("slider").oninput = function() {
+            output.innerHTML = this.value;
+            }
+        </script>
+            <div class="box">
+                <div class="row">
+                  <div class="column" id="tpclass"style="background-color:#aaa;">
+                    <h2>True Positives</h2>
+                    <p id="tp"></p>
+                  </div>
+                  <div class="column" id="fpclass"style="background-color:#bbb;">
+                    <h2>False Positives</h2>
+                    <p id="fp"></p>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="column" id="fnclass" style="background-color:#aaa;">
+                    <h2>False Negatives</h2>
+                    <p id="fn"></p>
+                  </div>
+                  <div class="column" id="tnclass" style="background-color:#bbb;">
+                    <h2>True Negatives</h2>
+                    <p id="tn"></p>
+                  </div>
+                </div>
+            </div>
     </div>
+
 </body>
 </html>    
