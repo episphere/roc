@@ -15,7 +15,7 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
-    h +='<input id="fileInput" type="file" style="color:blue"> <input type="range"> <span style="color:silver">(under development)</span>'
+    h +='<input id="fileInput" type="file" style="color:blue">'
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
 
@@ -39,6 +39,7 @@ roc.ui=function(div){ // called onload by the reference web application
     }
 
 
+
     // Box
     /*
     (new Box.FilePicker()).show(false, '123', {
@@ -48,8 +49,6 @@ roc.ui=function(div){ // called onload by the reference web application
 
     return div
 }
-
-
 
 roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP element
     roc.data={
@@ -61,25 +60,16 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.data.obs[i]=parseFloat(row[0])
         roc.data.pred[i]=parseFloat(row[1])
     })
-    let threshhold = roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
-
+    roc.data.th=[...roc.data.pred].sort((a,b)=>(a>b? 1 : -1)) // all the thresholds to try
+    const count=x=>x.reduce((a,b)=>a+b)
     roc.data.truePosCount=[]
-    roc.data.trueNegCount=[]
     roc.data.falsePosCount=[]
-    roc.data.falseNegCount=[]
     roc.data.th.forEach((t,i)=>{
-//             const count=x=>x.reduce((a,b)=>a+b)
-        let pos=[]
-        let neg=[]
-        let idk= roc.data.pred.map(p=>p>=t ? pos.push(p) : neg.push(p))
+        let pos=roc.data.pred.map(p=>p>=t)
         let truePos=pos.map((ps,i)=>(ps&roc.data.obs[i]))
         let falsePos=pos.map((ps,i)=>(ps&(!roc.data.obs[i])))
-        let falseNeg=neg.map((ns,i)=>(ns&(!roc.data.obs[i])))
-        let trueNeg=neg.map((ns,i)=>(ns&(roc.data.obs[i])))
-        roc.data.truePosCount[i]=truePos.length
-        roc.data.falsePosCount[i]=falsePos.length
-        roc.data.falseNegCount[i]=falseNeg.length
-        roc.data.trueNegCount[i]=trueNeg.length
+        roc.data.truePosCount[i]=count(truePos)
+        roc.data.falsePosCount[i]=count(falsePos)
     })
     n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
     roc.data.falsePosRate=[1].concat(roc.data.falsePosCount.map(d=>d/n))
@@ -94,11 +84,6 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
     }   
-
-    document.getElementById("tp").innerHTML= roc.data.truePosCount.length;
-    document.getElementById("fp").innerHTML= roc.data.falsePosCount.length;
-    document.getElementById("tn").innerHTML=roc.data.trueNegCount.length;
-    document.getElementById("fn").innerHTML=roc.data.falseNegCount.length;
 }
 
 roc.plotDiv=(div)=>{
@@ -119,9 +104,16 @@ roc.plotDiv=(div)=>{
         let xyROC = {
             x: roc.data.falsePosRate,
             y: roc.data.truePosRate,
-            z: roc.data.th,
+            name:'ROC',
             fill: 'tonexty',
             fillcolor:'#85C1E9'
+        };
+        let thROC = {
+            x: roc.data.falsePosRate,
+            y: roc.data.th,
+            name:'segmentation',
+            fillcolor:'#85C1E9',
+            yaxis:'y2'
         };
         let layout = {
           title: `Receiver Operating Characteristic, AUC: ${roc.data.auc}`,
@@ -131,7 +123,8 @@ roc.plotDiv=(div)=>{
             linecolor: 'black',
             mirror: true,
             fixedrange: true,
-            showspikes: true
+            showspikes: true,
+
           },
           yaxis: {
             title: 'true positive rate',
@@ -141,43 +134,19 @@ roc.plotDiv=(div)=>{
             fixedrange: true,
             showspikes: true
           },
+          yaxis2: {
+              title:'segmentation value',
+              titlefont: {color: 'maroon'},
+              overlaying: 'y',
+              side: 'right',
+          },
+          showlegend:false,
           plot_bgcolor: '#F2F4F4'
         };
-        Plotly.newPlot(div, [xyROC],layout);
+        Plotly.newPlot(div, [xyROC,thROC],layout);
     }
 }
 
 if(typeof(define)!="undefined"){
     define(roc)
 }
-
-function updateSlider(){
-     document.getElementById("slider").setAttribute("min", Math.min(...roc.data.th))
-     document.getElementById("slider").setAttribute("max", Math.max(...roc.data.th))
-     document.getElementById("slider").setAttribute("value", median(roc.data.th))
-     trace1.y = document.getElementById("slider").value
-    
-}
-
-function median(numbers) {
-    var median = 0, numsLen = numbers.length;
-    numbers.sort();
-    if (
-        numsLen % 2 === 0 
-    ) {
-        median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
-    } else { 
-      median = numbers[(numsLen - 1) / 2];
-    }
-    return median;
-}
-
-
-const trace1 = {
-
-}
-
-
-
-const data = [trace1]
-Plotly.newPlot('rocTd', data)
