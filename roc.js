@@ -106,14 +106,18 @@ roc.plotDiv=(div)=>{
             y: roc.data.truePosRate,
             name:'ROC',
             fill: 'tonexty',
-            fillcolor:'#85C1E9'
+            fillcolor:'rgba(133,193,233,0.5)'
         };
         let thROC = {
             x: roc.data.falsePosRate,
             y: roc.data.th,
             name:'segmentation',
-            fillcolor:'#85C1E9',
-            yaxis:'y2'
+            yaxis:'y2',
+            mode: 'markers',
+            marker:{
+                color:'rgba(128,0,0,0.4)',
+                size:5
+            }
         };
         let layout = {
           title: `Receiver Operating Characteristic, AUC: ${roc.data.auc}`,
@@ -128,6 +132,7 @@ roc.plotDiv=(div)=>{
           },
           yaxis: {
             title: 'true positive rate',
+            titlefont: {color: 'navy'},
             range:[0,1],
             linecolor: 'black',
             mirror: true,
@@ -135,10 +140,21 @@ roc.plotDiv=(div)=>{
             showspikes: true
           },
           yaxis2: {
-              title:'segmentation value',
-              titlefont: {color: 'maroon'},
+              title:'segmentation value (&#9679;)',
+              titlefont: {
+                  color: 'maroon',
+                  size:12
+              },
+              tickfont: {
+                  color: 'maroon',
+                  size:12
+              },
               overlaying: 'y',
               side: 'right',
+              showgrid:false,
+              zeroline: false,
+              mirror: true,
+              fixedrange: true,
           },
           showlegend:false,
           plot_bgcolor: '#F2F4F4'
