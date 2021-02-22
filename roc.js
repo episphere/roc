@@ -15,7 +15,12 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
+    h +='<span style="font-size:small">'
     h +='<input id="fileInput" type="file" style="color:blue">'
+    h +='<button id="plotData" type="button" style="color:blue" onclick="roc.parseText()">Plot</button> '
+    h +='<button id="downloadData" type="button" style="color:blue">Download</button><input id="fileName" value="ROC.json" style="color:green" size=10> <sup><a href="https://episphere.github.io/plot" target="_blank">csv</a></sup>'
+    h +='</span>'
+    
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
 
@@ -36,6 +41,11 @@ roc.ui=function(div){ // called onload by the reference web application
           roc.parseText()
         };
         reader.readAsText(ip.files[0]);
+    }
+
+    let downld = document.getElementById('downloadData')
+    downld.onclick=function(){
+        roc.saveFile(JSON.stringify(roc.plotData),fileName.value)
     }
 
 
@@ -159,8 +169,19 @@ roc.plotDiv=(div)=>{
           showlegend:false,
           plot_bgcolor: '#F2F4F4'
         };
-        Plotly.newPlot(div, [xyROC,thROC],layout);
+        roc.plotData={traces:[xyROC,thROC],layout:layout}
+        Plotly.newPlot(div, roc.plotData.traces,layout);
     }
+}
+
+roc.saveFile=function(x,fileName) { // x is the content of the file
+    var bb = new Blob([x]);
+    var url = URL.createObjectURL(bb);
+    var a = document.createElement('a');
+    a.href=url;
+    a.download=fileName
+    a.click() // then download it automatically 
+    return a
 }
 
 if(typeof(define)!="undefined"){
