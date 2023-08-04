@@ -187,7 +187,7 @@ roc.plotDiv=(div)=>{
     roc.data.n = roc.data.th.length
     
     function fillConfusion(){
-        cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br><span style="font-size:x-small">(100%)</span>`
+        cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br><span style="font-size:x-small"></span>`
         let v = parseFloat(cf.querySelector('input').value)
         let pred = roc.data.pred.map(x=>(x>v)*1)
         let obs = roc.data.obs
