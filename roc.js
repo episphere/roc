@@ -14,7 +14,7 @@ roc.ui=function(div){ // called onload by the reference web application
     h +='<p>Provide data in two columns, [observed (0/1),predicted (numeric)] (<a href="?D1.csv">demo1</a>, <a href="?D2.csv">demo2</a>, borrowed from R\'s <a href="http://www.biosoft.hacettepe.edu.tr/easyROC/" target="_blank">easyROC</a> . Predicted is a number, typically between 0 and 1 indicating the cumulative probablity of a positive prediction, but can just as well be any number that evolves monotonically with the positive prediction. It can be, for example, the activation value of the output of a neural network.</p>'
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
-    h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td></tr></table>'
+    h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td><td id="confusion">...</td></tr></table>'
     h +='<span style="font-size:small">'
     h +='<input id="fileInput" type="file" style="color:blue">'
     h +='<button id="plotData" type="button" style="color:blue" onclick="roc.parseText()">Plot</button> '
@@ -23,7 +23,7 @@ roc.ui=function(div){ // called onload by the reference web application
     
     //h +='<div class="boxPicker" style="height:600px"></div>'
     div.innerHTML=h
-
+    
     if(location.search.length>3){
         let url=location.search.slice(1)
         fetch(url).then(f=>f.text().then(txt=>{
@@ -47,16 +47,22 @@ roc.ui=function(div){ // called onload by the reference web application
     downld.onclick=function(){
         roc.saveFile(JSON.stringify(roc.plotData),fileName.value)
     }
+// add confusion table
+    let cf =div.querySelector('#confusion')
 
-
-
-    // Box
-    /*
-    (new Box.FilePicker()).show(false, '123', {
-        container: '#boxPicker'
-    });
-    */
-
+    cf.innerHTML=`
+    <h5 style="color:black">Confusion table</h5>
+    <p>Segmentation: <input id="segValue" size=10></p>
+    <table>
+    <tr><td></td><td align="middle">Predicted</td></tr>
+    <tr><td style="transform: rotate(-90deg);vertical-align:middle">Observed</td><td>
+        <table style="border:solid">
+        <tr><td id="totalCount" align="center" style="border:solid">total</td><td align="center">true</td><td align="center">false</td></tr>
+        <tr><td align="right">true</td><td style="background-color:silver" align="center" id="truePos">true positives</td><td style="background-color:silver" align="center" id="falseNeg">false negatives</td></tr>
+        <tr><td align="right">false</td><td style="background-color:silver" align="center" id="falsePos">false positives</td><td style="background-color:silver" align="center" id="trueNeg">true negatives</td></tr>
+        </table>
+    </td></tr>
+    </table>`
     return div
 }
 
@@ -93,7 +99,10 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     roc.data.auc=Math.round(roc.data.auc*10000)/10000 // rounding to 4 digits
     if(typeof(plotDiv)!="undefined"){
         roc.plotDiv(plotDiv)
-    }   
+    }
+    // set median as the default segmentation value
+    document.body.querySelector('#segValue').value=roc.data.th[Math.round(roc.data.th.length/2)]
+    //debugger
 }
 
 roc.plotDiv=(div)=>{
@@ -114,7 +123,7 @@ roc.plotDiv=(div)=>{
         let xyROC = {
             x: roc.data.falsePosRate,
             y: roc.data.truePosRate,
-            name:'ROC',
+            name:'true positive',
             fill: 'tonexty',
             fillcolor:'rgba(133,193,233,0.5)'
         };
@@ -172,6 +181,29 @@ roc.plotDiv=(div)=>{
         roc.plotData={traces:[xyROC,thROC],layout:layout}
         Plotly.newPlot(div, roc.plotData.traces,layout);
     }
+
+    // Fill confusion matrix
+    let cf =roc.div.parentElement.parentElement.querySelector('#confusion')
+    roc.data.n = roc.data.th.length
+    
+    function fillConfusion(){
+        cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br>(100%)`
+        let v = parseFloat(cf.querySelector('input').value)
+        let pred = roc.data.pred.map(x=>(x>v)*1)
+        let obs = roc.data.obs
+        let tp = obs.map((x,i)=>((x)&(pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#truePos').innerHTML=`${tp}`
+        let fp = obs.map((x,i)=>((!x)&(pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#falsePos').innerHTML=`${fp}`
+        let tn = obs.map((x,i)=>((!x)&(!pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#trueNeg').innerHTML=`${tn}`
+        let fn = obs.map((x,i)=>((x)&(!pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#falseNeg').innerHTML=`${fn}`
+        let pos = obs.reduce((a,b)=>a+b)
+        let neg = obs.map(x=>!x).reduce((a,b)=>a+b)
+    }
+    fillConfusion()
+    cf.querySelector('input').onkeyup=fillConfusion
 }
 
 roc.saveFile=function(x,fileName) { // x is the content of the file
