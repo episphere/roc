@@ -55,7 +55,7 @@ roc.ui=function(div){ // called onload by the reference web application
     <p>Segmentation: <input id="segValue" size=10></p>
     <table>
     <tr><td></td><td align="middle">Predicted</td></tr>
-    <tr><td style="transform: rotate(-90deg);vertical-align:middle">Observed</td><td>
+    <tr><td style="transform: rotate(-90deg);vertical-align:bottom">Observed<br><span style="font-size:xx-small">&nbsp;</span></td><td>
         <table style="border:solid">
         <tr><td id="totalCount" align="center" style="border:solid">total</td><td align="center">true</td><td align="center">false</td></tr>
         <tr><td align="right">true</td><td style="background-color:silver" align="center" id="truePos">true positives</td><td style="background-color:silver" align="center" id="falseNeg">false negatives</td></tr>
