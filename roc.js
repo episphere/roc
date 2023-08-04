@@ -187,20 +187,20 @@ roc.plotDiv=(div)=>{
     roc.data.n = roc.data.th.length
     
     function fillConfusion(){
-        cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br>(100%)`
+        cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br><span style="font-size:x-small">(100%)</span>`
         let v = parseFloat(cf.querySelector('input').value)
         let pred = roc.data.pred.map(x=>(x>v)*1)
         let obs = roc.data.obs
-        let tp = obs.map((x,i)=>((x)&(pred[i]))).reduce((a,b)=>(a+b))
-        cf.querySelector('#truePos').innerHTML=`${tp}`
-        let fp = obs.map((x,i)=>((!x)&(pred[i]))).reduce((a,b)=>(a+b))
-        cf.querySelector('#falsePos').innerHTML=`${fp}`
-        let tn = obs.map((x,i)=>((!x)&(!pred[i]))).reduce((a,b)=>(a+b))
-        cf.querySelector('#trueNeg').innerHTML=`${tn}`
-        let fn = obs.map((x,i)=>((x)&(!pred[i]))).reduce((a,b)=>(a+b))
-        cf.querySelector('#falseNeg').innerHTML=`${fn}`
         let pos = obs.reduce((a,b)=>a+b)
         let neg = obs.map(x=>!x).reduce((a,b)=>a+b)
+        let tp = obs.map((x,i)=>((x)&(pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#truePos').innerHTML=`${tp}<br><span style="font-size:x-small">(${Math.round(100*tp/pos)}%)</span>`
+        let fp = obs.map((x,i)=>((!x)&(pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#falsePos').innerHTML=`${fp}<br><span style="font-size:x-small">(${Math.round(100*fp/pos)}%)</span>`
+        let tn = obs.map((x,i)=>((!x)&(!pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#trueNeg').innerHTML=`${tn}<br><span style="font-size:x-small">(${Math.round(100*tn/neg)}%)</span>`
+        let fn = obs.map((x,i)=>((x)&(!pred[i]))).reduce((a,b)=>(a+b))
+        cf.querySelector('#falseNeg').innerHTML=`${fn}<br><span style="font-size:x-small">(${Math.round(100*fn/neg)}%)</span>`
     }
     fillConfusion()
     cf.querySelector('input').onkeyup=fillConfusion
