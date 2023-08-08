@@ -101,7 +101,8 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.plotDiv(plotDiv)
     }
     // set median as the default segmentation value
-    document.body.querySelector('#segValue').value=roc.data.th[Math.round(roc.data.th.length/2)]
+    //document.body.querySelector('#segValue').value=roc.data.th[Math.round(roc.data.th.length/2)]
+    document.body.querySelector('#segValue').value=roc.data.th[roc.data.n-roc.data.obs.reduce((a,b)=>a+b)]
     //debugger
 }
 
