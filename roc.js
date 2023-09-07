@@ -113,7 +113,7 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     segRange.min=roc.data.th[0]
     segRange.step=(parseFloat(segRange.max)-parseFloat(segRange.min))/200
     segRange.value=segValue.value
-    segRange.onchange=function(){
+    segRange.oninput=function(){
         segValue.value=segRange.value
         fillConfusion()
     }
@@ -139,12 +139,14 @@ function fillConfusion(){
     cf.querySelector('#falseNeg').innerHTML=`${fn}<br><span style="font-size:x-small">(${Math.round(100*fn/(tp+fn))}%)</span>`
     cf.querySelector('#falsePos').innerHTML=`${fp}<br><span style="font-size:x-small">(${Math.round(100*fp/(fp+tn))}%)</span>`
     cf.querySelector('#trueNeg').innerHTML=`${tn}<br><span style="font-size:x-small">(${Math.round(100*tn/(fp+tn))}%)</span>`
+    /*
     console.log({
         tp:tp,
         fn:fn,
         fp:fp,
         tn:tn
     })
+    */
 }
 
 roc.plotDiv=(div)=>{
