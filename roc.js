@@ -52,7 +52,10 @@ roc.ui=function(div){ // called onload by the reference web application
 
     cf.innerHTML=`
     <h5 style="color:black">Confusion table</h5>
-    <p>Segmentation: <input id="segValue" size=10></p>
+    <p>
+    Segmentation: <input id="segValue" size=10>
+    <br><input id="segRange" type="range" style="width:100%" min=0 max=100>
+    </p>
     <table>
     <tr><td></td><td align="left:middle">Predicted</td></tr>
     <tr><td id="observedLabel" style="transform: rotate(-90deg);vertical-align:bottom;max-width:4em">Observed<br>&nbsp;</td><td>
@@ -103,7 +106,45 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
     // set median as the default segmentation value
     //document.body.querySelector('#segValue').value=roc.data.th[Math.round(roc.data.th.length/2)]
     document.body.querySelector('#segValue').value=roc.data.th[roc.data.n-roc.data.obs.reduce((a,b)=>a+b)]
-    //debugger
+    //connect to slider
+    let segValue = document.body.querySelector('#segValue')
+    let segRange = document.body.querySelector('#segRange')
+    segRange.max=roc.data.th[roc.data.th.length-1]
+    segRange.min=roc.data.th[0]
+    segRange.step=(parseFloat(segRange.max)-parseFloat(segRange.min))/200
+    segRange.value=segValue.value
+    segRange.onchange=function(){
+        segValue.value=segRange.value
+        fillConfusion()
+    }
+    segValue.onchange=function(){
+        segRange.value=segValue.value
+    }
+}
+
+function fillConfusion(){
+    let cf =roc.div.parentElement.parentElement.querySelector('#confusion')
+    roc.data.n = roc.data.th.length
+    cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br><span style="font-size:x-small"></span>`
+    let v = parseFloat(cf.querySelector('input').value)
+    let pred = roc.data.pred.map(x=>(x>v)*1)
+    let obs = roc.data.obs
+    //let pos = obs.reduce((a,b)=>a+b)
+    //let neg = obs.map(x=>!x).reduce((a,b)=>a+b)
+    let tp = obs.map((x,i)=>((x)&(pred[i]))).reduce((a,b)=>(a+b))
+    let fp = obs.map((x,i)=>((!x)&(pred[i]))).reduce((a,b)=>(a+b))
+    let tn = obs.map((x,i)=>((!x)&(!pred[i]))).reduce((a,b)=>(a+b))
+    let fn = obs.map((x,i)=>((x)&(!pred[i]))).reduce((a,b)=>(a+b))
+    cf.querySelector('#truePos').innerHTML=`${tp}<br><span style="font-size:x-small">(${Math.round(100*tp/(tp+fn))}%)</span>`
+    cf.querySelector('#falseNeg').innerHTML=`${fn}<br><span style="font-size:x-small">(${Math.round(100*fn/(tp+fn))}%)</span>`
+    cf.querySelector('#falsePos').innerHTML=`${fp}<br><span style="font-size:x-small">(${Math.round(100*fp/(fp+tn))}%)</span>`
+    cf.querySelector('#trueNeg').innerHTML=`${tn}<br><span style="font-size:x-small">(${Math.round(100*tn/(fp+tn))}%)</span>`
+    console.log({
+        tp:tp,
+        fn:fn,
+        fp:fp,
+        tn:tn
+    })
 }
 
 roc.plotDiv=(div)=>{
@@ -186,28 +227,6 @@ roc.plotDiv=(div)=>{
     let cf =roc.div.parentElement.parentElement.querySelector('#confusion')
     roc.data.n = roc.data.th.length
     
-    function fillConfusion(){
-        cf.querySelector('#totalCount').innerHTML=`${roc.data.n}<br><span style="font-size:x-small"></span>`
-        let v = parseFloat(cf.querySelector('input').value)
-        let pred = roc.data.pred.map(x=>(x>v)*1)
-        let obs = roc.data.obs
-        //let pos = obs.reduce((a,b)=>a+b)
-        //let neg = obs.map(x=>!x).reduce((a,b)=>a+b)
-        let tp = obs.map((x,i)=>((x)&(pred[i]))).reduce((a,b)=>(a+b))
-        let fp = obs.map((x,i)=>((!x)&(pred[i]))).reduce((a,b)=>(a+b))
-        let tn = obs.map((x,i)=>((!x)&(!pred[i]))).reduce((a,b)=>(a+b))
-        let fn = obs.map((x,i)=>((x)&(!pred[i]))).reduce((a,b)=>(a+b))
-        cf.querySelector('#truePos').innerHTML=`${tp}<br><span style="font-size:x-small">(${Math.round(100*tp/(tp+fn))}%)</span>`
-        cf.querySelector('#falseNeg').innerHTML=`${fn}<br><span style="font-size:x-small">(${Math.round(100*fn/(tp+fn))}%)</span>`
-        cf.querySelector('#falsePos').innerHTML=`${fp}<br><span style="font-size:x-small">(${Math.round(100*fp/(fp+tn))}%)</span>`
-        cf.querySelector('#trueNeg').innerHTML=`${tn}<br><span style="font-size:x-small">(${Math.round(100*tn/(fp+tn))}%)</span>`
-        console.log({
-            tp:tp,
-            fn:fn,
-            fp:fp,
-            tn:tn
-        })
-    }
     fillConfusion()
     cf.querySelector('input').onkeyup=fillConfusion
 }
