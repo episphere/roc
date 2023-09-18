@@ -11,7 +11,7 @@ roc.ui=function(div){ // called onload by the reference web application
     // populate div
     // note demo points to D1 test data set produced as per https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html
     let h = '<h3>Data</h3>'
-    h +='<p>Provide data in two columns, [observed (0/1),predicted (numeric)], or try with test data <a href="?D1.csv">demo1</a> and <a href="?D2.csv">demo2</a> borrowed from R\'s <a href="http://www.biosoft.hacettepe.edu.tr/easyROC/" target="_blank">easyROC</a>. Predicted is a number, typically between 0 and 1 indicating the cumulative probablity of a positive prediction, but can just as well be any number that evolves monotonically with the positive prediction. It can be, for example, the activation value of the output of a neural network.</p>'
+    h +='<p>Provide data in two columns, [observed (0/1),predicted (numeric)], or try with test data <a href="?D1.csv">demo1</a> and <a href="?D2.csv">demo2</a> borrowed from R\'s <a href="http://biosoft.erciyes.edu.tr/app/easyROC/" target="_blank">easyROC</a>. Predicted is a number, typically between 0 and 1 indicating the cumulative probablity of a positive prediction, but can just as well be any number that evolves monotonically with the positive prediction. It can be, for example, the activation value of the output of a neural network.</p>'
     h +='<table><tr><td>'
     h +='<textarea id="rocData" style="height:500px;width:150px;font-size:small"></textarea>'
     h +='</td><td id="rocTd" style="vertical-align:top"><div id="plotDiv">(ROC will be ploted here)</div></td><td id="confusion">...</td></tr></table>'
