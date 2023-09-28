@@ -90,13 +90,14 @@ roc.parseText=(txt=rocData.value,divId='plotDiv')=>{ // default points ti UP ele
         roc.data.truePosCount[i]=count(truePos)
         roc.data.falsePosCount[i]=count(falsePos)
     })
-    n = roc.data.obs.reduce((a,b)=>a+b) // # positive observations
-    roc.data.falsePosRate=[1].concat(roc.data.falsePosCount.map(d=>d/n))
-    roc.data.truePosRate=[1].concat(roc.data.truePosCount.map(d=>d/n))
+    p = roc.data.obs.reduce((a,b)=>b===1 ? a+1 : a, 0) // # positive observations
+    n = roc.data.obs.reduce((a,b)=>b===0 ? a+1 : a, 0) // # negative observations
+    roc.data.truePosRate=roc.data.truePosCount.map(d=>d/p)
+    roc.data.falsePosRate=roc.data.falsePosCount.map(d=>d/n)
     // calculate AUC
     let dxdy=[]
-    for(var j=1; j<roc.data.truePosRate.length ; j++){
-        dxdy[j-1]=roc.data.truePosRate[j]*(roc.data.falsePosRate[j-1]-roc.data.falsePosRate[j])
+    for(var j=0; j<roc.data.truePosRate.length-1 ; j++){
+        dxdy[j]=roc.data.truePosRate[j]*(roc.data.falsePosRate[j]-roc.data.falsePosRate[j+1])
     }
     roc.data.auc=dxdy.reduce((a,b)=>a+b)
     roc.data.auc=Math.round(roc.data.auc*10000)/10000 // rounding to 4 digits
