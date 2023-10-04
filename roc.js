@@ -52,7 +52,7 @@ roc.ui=function(div){ // called onload by the reference web application
     let cf =div.querySelector('#confusion')
 
     cf.innerHTML=`
-    <h5 style="color:black">Confusion table</h5>
+    <h5 style="color:black">Confusion Matrix</h5>
     <p>
     Segmentation: <input id="segValue" size=10>
     <br><input id="segRange" type="range" style="width:100%" min=0 max=100>
@@ -187,7 +187,7 @@ roc.plotDiv=(div)=>{
         let layout = {
           title: `${document.getElementById("titlePlot").value}<br>Receiver Operating Characteristic, AUC: ${roc.data.auc}`,
           xaxis: {
-            title: 'false positive rate',
+            title: 'false positive rate, 1-specificity',
             range:[0,1],
             linecolor: 'black',
             mirror: true,
@@ -195,7 +195,7 @@ roc.plotDiv=(div)=>{
             showspikes: true,
           },
           yaxis: {
-            title: 'true positive rate',
+            title: 'true positive rate, sensitivity',
             titlefont: {color: 'navy'},
             range:[0,1],
             linecolor: 'black',
